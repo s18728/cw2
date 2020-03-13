@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -43,6 +44,7 @@ namespace Cw2
             }
 
             HashSet<Student> studenci = new HashSet<Student>(new OwnComparer());
+            Dictionary<string, Studies> studiesDict = new Dictionary<string, Studies>();
             StringBuilder logsb = new StringBuilder();
             logsb.Append("Studenci nie dodani z powodu blednych danych:");
             logsb.AppendLine();
@@ -73,16 +75,17 @@ namespace Cw2
                         }
                     }
                     if (!ok) continue;
+                    Studies studiestmp = new Studies
+                    {
+                        name = student[2],
+                        mode = student[3]
+                    };
 
                     Student st = new Student
                     {
                         fname = student[0],
                         lname = student[1],
-                        studies = new Studies
-                        {
-                            name = student[2],
-                            mode = student[3]
-                        },
+                        studies = studiestmp,
                         indexNumber = student[4],
                         birthdate = student[5],
                         email = student[6],
@@ -93,6 +96,19 @@ namespace Cw2
                     {
                         logsb.Append(line + "\t | powtorka studenta!");
                         logsb.AppendLine();
+                        ok = false;
+                    }
+
+                    if (ok)
+                    {
+                        if (studiesDict.ContainsKey(studiestmp.name))
+                        {
+                            studiesDict[studiestmp.name].numberOfStudents++;
+                        }
+                        else
+                        {
+                            studiesDict[studiestmp.name] = studiestmp;
+                        }
                     }
                     
                 }
@@ -117,21 +133,33 @@ namespace Cw2
             File.WriteAllText(@"log.txt", logsb.ToString());
 
             var today = DateTime.Today;
+            List<ActiveStudies> activeStudies = new List<ActiveStudies>();
+            foreach (var keyPar in studiesDict)
+            {
+                ActiveStudies tmp = new ActiveStudies()
+                {
+                    name = keyPar.Value.name,
+                    numberOfStudents = keyPar.Value.numberOfStudents
+                };
+                activeStudies.Add(tmp);
+            }
 
             Uczelnia uczelnia = new Uczelnia()
             {
                 author = "Jakub Oleksiak",
                 createdAt = today.ToShortDateString(),
-                studenci = studenci
+                studenci = studenci,
+                activeStudies = activeStudies
             };
 
-            //TODO toXML serialisation
             FileStream toXmlWriter = new FileStream(pathToResult, FileMode.Create);
             XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
             ns.Add("", "");
             XmlSerializer xmlSerializer = new XmlSerializer(typeof(Uczelnia));
             xmlSerializer.Serialize(toXmlWriter, uczelnia, ns);
 
+            toXmlWriter.Close();
+            toXmlWriter.Dispose();
         }
     }
 }

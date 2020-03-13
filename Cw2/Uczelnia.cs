@@ -10,5 +10,6 @@ namespace Cw2
         [XmlAttribute] public string createdAt;
         [XmlAttribute] public string author;
         public HashSet<Student> studenci;
+        public List<ActiveStudies> activeStudies;
     }
 }

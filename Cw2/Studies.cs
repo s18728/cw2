@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace Cw2
 {
@@ -9,10 +10,6 @@ namespace Cw2
         public string name;
         public string mode;
 
-        public bool Equals(Studies studies2)
-        {
-            if (studies2.name.Equals(this.name)) return true;
-            else return false;
-        }
+        [XmlIgnore] public int numberOfStudents = 1;
     }
 }

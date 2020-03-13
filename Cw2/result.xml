@@ -2563,4 +2563,13 @@
       </studies>
     </Student>
   </studenci>
+  <activeStudies>
+    <studies name="Informatyka dzienne" numberOfStudents="106" />
+    <studies name="Sztuka Nowych Mediów dzienne" numberOfStudents="64" />
+    <studies name="Sztuka Nowych Mediów zaoczne" numberOfStudents="1" />
+    <studies name="Informatyka dzienne po angielsku" numberOfStudents="23" />
+    <studies name="Zarządzanie informacją dzienne (kierunek Zarządzanie)" numberOfStudents="1" />
+    <studies name="Informatyka internetowe magisterskie" numberOfStudents="1" />
+    <studies name="Informatyka zaoczne" numberOfStudents="1" />
+  </activeStudies>
 </Uczelnia>
