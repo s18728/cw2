@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace Cw2
 {
@@ -30,7 +31,7 @@ namespace Cw2
             }
             else if (args.Length == 0)
             {
-                pathToCsv = @"data.csv";
+                pathToCsv = @"dane.csv";
                 pathToResult = @"result.xml";
                 conversionType = "xml";
             }
@@ -41,16 +42,22 @@ namespace Cw2
             }
 
             HashSet<Student> studenci = new HashSet<Student>(new OwnComparer());
+            StringBuilder logsb = new StringBuilder();
+            logsb.Append("Studenci nie dodani z powodu blednych danych:");
+            logsb.AppendLine();
             try
             {
+                
                 var lines = File.ReadLines(pathToCsv);
-                bool ok = true;
+                bool ok;
                 foreach (var line in lines)
                 {
+                    ok = true;
                     string[] student = line.Split(',');
                     if (student.Length != 9)
                     {
-                        //TODO do log.txt
+                        logsb.Append(line + "\t | zla ilosc danych!");
+                        logsb.AppendLine();
                         continue;
                     }
 
@@ -59,7 +66,8 @@ namespace Cw2
                         if (pole.Length == 0)
                         {
                             ok = false;
-                            //TODO do log.txt
+                            logsb.Append(line + "\t | puste pole!");
+                            logsb.AppendLine();
                             break;
                         }
                     }
@@ -82,22 +90,30 @@ namespace Cw2
                     };
                     if (!studenci.Add(st))
                     {
-                        //TODO nie dodane, do log.txt
+                        logsb.Append(line + "\t | powtorka studenta!");
+                        logsb.AppendLine();
                     }
                     
                 }
             }
             catch (ArgumentException e)
             {
-                //TODO to log.txt
-                throw new ArgumentException("Podana sciezka jest niepoprawna!");
+                logsb.AppendLine();
+                logsb.Append("==================");
+                logsb.AppendLine();
+                logsb.Append(e);
+                Console.WriteLine("Podana sciezka jest niepoprawna!");
             }
             catch (FileNotFoundException e)
             {
-                //TODO to log.txt
-                throw new FileNotFoundException("Plik " + pathToCsv + " nie istnieje!");
+                logsb.AppendLine();
+                logsb.Append("==================");
+                logsb.AppendLine();
+                logsb.Append(e);
+                Console.WriteLine("Plik " + pathToCsv + " nie istnieje!");
             }
             
+            File.WriteAllText(@"log.txt", logsb.ToString());
 
             //TODO toXML serialisation
         }
