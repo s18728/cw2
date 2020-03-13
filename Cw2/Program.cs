@@ -8,11 +8,42 @@ namespace Cw2
     {
         public static void Main(string[] args)
         {
-            var path = @"C:\Users\s18728\Desktop\cw2\dane.csv";
+            string pathToCsv;
+            string pathToResult;
+            string conversionType;
+            if (args.Length == 3)
+            {
+                pathToCsv = args[0];
+                pathToResult = args[1];
+                conversionType = args[2];
+            }
+            else if (args.Length == 1)
+            {
+                pathToCsv = args[0];
+                pathToResult = @"result.xml";
+                conversionType = "xml";
+            }else if (args.Length == 2)
+            {
+                pathToCsv = args[0];
+                pathToResult = args[1];
+                conversionType = "xml";
+            }
+            else if (args.Length == 0)
+            {
+                pathToCsv = @"data.csv";
+                pathToResult = @"result.xml";
+                conversionType = "xml";
+            }
+            else
+            {
+                Console.Error.Write("Niepoprawna liczba argumentow!");
+                return;
+            }
+
             HashSet<Student> studenci = new HashSet<Student>(new OwnComparer());
             try
             {
-                var lines = File.ReadLines(path);
+                var lines = File.ReadLines(pathToCsv);
                 bool ok = true;
                 foreach (var line in lines)
                 {
@@ -58,17 +89,17 @@ namespace Cw2
             }
             catch (ArgumentException e)
             {
-                Console.Error.Write("Niepoprawna sciezka!");
                 //TODO to log.txt
+                throw new ArgumentException("Podana sciezka jest niepoprawna!");
             }
             catch (FileNotFoundException e)
             {
-                Console.Error.Write("Plik nie istnieje!");
                 //TODO to log.txt
+                throw new FileNotFoundException("Plik " + pathToCsv + " nie istnieje!");
             }
             
 
-            
+            //TODO toXML serialisation
         }
     }
 }
