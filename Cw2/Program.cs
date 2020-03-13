@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Xml.Serialization;
 
 namespace Cw2
 {
@@ -63,7 +64,7 @@ namespace Cw2
 
                     foreach (var pole in student)
                     {
-                        if (pole.Length == 0)
+                        if (string.IsNullOrEmpty(pole) || string.IsNullOrWhiteSpace(pole))
                         {
                             ok = false;
                             logsb.Append(line + "\t | puste pole!");
@@ -115,7 +116,22 @@ namespace Cw2
             
             File.WriteAllText(@"log.txt", logsb.ToString());
 
+            var today = DateTime.Today;
+
+            Uczelnia uczelnia = new Uczelnia()
+            {
+                author = "Jakub Oleksiak",
+                createdAt = today.ToShortDateString(),
+                studenci = studenci
+            };
+
             //TODO toXML serialisation
+            FileStream toXmlWriter = new FileStream(pathToResult, FileMode.Create);
+            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+            ns.Add("", "");
+            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Uczelnia));
+            xmlSerializer.Serialize(toXmlWriter, uczelnia, ns);
+
         }
     }
 }
