@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Text.Json;
 using System.Xml.Serialization;
 
 namespace Cw2
@@ -151,15 +151,32 @@ namespace Cw2
                 studenci = studenci,
                 activeStudies = activeStudies
             };
+            
+            if (conversionType.Equals("xml"))
+            {
+                FileStream toResWriter = new FileStream(pathToResult, FileMode.Create);
+                XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+                ns.Add("", "");
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(Uczelnia));
+                xmlSerializer.Serialize(toResWriter, uczelnia, ns);
+                toResWriter.Close();
+                toResWriter.Dispose();
+            }
+            else if (conversionType.Equals("json"))
+            {
+                JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions();
+                jsonSerializerOptions.WriteIndented = true;
+                Package package = new Package();
+                package.uczelnia = new Uczelnia(uczelnia);
+                var json = JsonSerializer.Serialize(package, jsonSerializerOptions);
+                File.WriteAllText(pathToResult, json);
+            }
+            
+            
 
-            FileStream toXmlWriter = new FileStream(pathToResult, FileMode.Create);
-            XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
-            ns.Add("", "");
-            XmlSerializer xmlSerializer = new XmlSerializer(typeof(Uczelnia));
-            xmlSerializer.Serialize(toXmlWriter, uczelnia, ns);
+            
 
-            toXmlWriter.Close();
-            toXmlWriter.Dispose();
+            
         }
     }
 }

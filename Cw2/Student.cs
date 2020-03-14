@@ -1,25 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Cw2
 {
+    [Serializable]
     public class Student
     {
-         public string indexNumber;
-         public string fname;
-         public string lname;
-         public string birthdate;
-         public string email;
-         public string mothersName;
-         public string fathersName;
-         public Studies studies;
+         public string indexNumber { get; set; }
+        public string fname { get; set; }
+        public string lname { get; set; }
+        public string birthdate { get; set; }
+        public string email { get; set; }
+        public string mothersName { get; set; }
+        public string fathersName { get; set; }
+        public Studies studies { get; set; }
 
-        public bool Equals(Student std2)
-        {
-            if (std2.indexNumber == this.indexNumber) return true;
-            else return false;
-        }
     }
 
 
